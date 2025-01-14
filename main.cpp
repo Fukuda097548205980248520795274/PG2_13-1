@@ -6,10 +6,6 @@
 
 const char kWindowTitle[] = "LC1C_20_フクダソウワ_PG2_13-1";
 
-int Bullet::count;
-int Enemy::count;
-int Enemy::isArrival_;
-
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -26,8 +22,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	---------------*/
 
 	// 敵
-	Enemy* enemyA = new Enemy(320.0f , 360.0f , -4.0f , 0.0f , 16.0f);
-	Enemy* enemyB = new Enemy(960.0f, 180.0f, 4.0f, 0.0f, 16.0f);
+	Enemy* enemy[2];
+	enemy[0] = new Enemy(320.0f, 360.0f, -4.0f, 0.0f, 16.0f);
+	enemy[1] = new Enemy(960.0f, 180.0f, 4.0f, 0.0f, 16.0f);
 
 	// プレイヤー
 	Player* player = new Player(640.0f, 540.0f, 32.0f);
@@ -59,35 +56,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Enemy::Respawn(keys, preKeys);
 
 		// 敵を動かす
-		enemyA->Move();
-		enemyB->Move();
+		enemy[0]->Move();
+		enemy[1]->Move();
 
 		// プレイヤーの弾 と 敵
 		for (int i = 0; i < kPlayerBulletNum; i++)
 		{
 			if (player->bullet[i]->isShot_)
 			{
-				// 敵A
-				if (enemyA->isArrival_)
+				for (int j = 0; j < 2; j++)
 				{
-					if (powf(player->bullet[i]->radius_ + enemyA->radius_, 2) >=
-						powf(enemyA->pos_.x - player->bullet[i]->pos_.x, 2) + powf(enemyA->pos_.y - player->bullet[i]->pos_.y, 2))
+					if (enemy[j]->isArrival_)
 					{
-						Enemy::GetHit();
+						if (powf(player->bullet[i]->radius_ + enemy[j]->radius_, 2) >=
+							powf(enemy[j]->pos_.x - player->bullet[i]->pos_.x, 2) + powf(enemy[j]->pos_.y - player->bullet[i]->pos_.y, 2))
+						{
+							Enemy::GetHit();
 
-						player->bullet[i]->isShot_ = false;
-					}
-				}
-
-				// 敵B
-				if (enemyB->isArrival_)
-				{
-					if (powf(player->bullet[i]->radius_ + enemyB->radius_, 2) >=
-						powf(enemyB->pos_.x - player->bullet[i]->pos_.x, 2) + powf(enemyB->pos_.y - player->bullet[i]->pos_.y, 2))
-					{
-						Enemy::GetHit();
-
-						player->bullet[i]->isShot_ = false;
+							player->bullet[i]->isShot_ = false;
+						}
 					}
 				}
 			}
@@ -116,8 +103,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		// 敵
-		enemyA->Draw();
-		enemyB->Draw();
+		enemy[0]->Draw();
+		enemy[1]->Draw();
 
 		///
 		/// ↑描画処理ここまで
@@ -132,9 +119,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 
+
+	/*--------------------------
+	    インスタンスを削除する
+	--------------------------*/
+
+	// プレイヤー
 	delete player;
-	delete enemyA;
-	delete enemyB;
+	
+	// 敵
+	delete enemy[0];
+	delete enemy[1];
+
 
 	// ライブラリの終了
 	Novice::Finalize();
