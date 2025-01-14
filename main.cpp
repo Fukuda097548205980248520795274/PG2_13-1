@@ -68,10 +68,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				{
 					if (enemy[j]->isArrival_)
 					{
+						// 敵に当たったら、消える（出現フラグがfalseになる）
 						if (powf(player->bullet[i]->radius_ + enemy[j]->radius_, 2) >=
 							powf(enemy[j]->pos_.x - player->bullet[i]->pos_.x, 2) + powf(enemy[j]->pos_.y - player->bullet[i]->pos_.y, 2))
 						{
-							Enemy::GetHit();
+							Enemy::isArrival_ = false;
 
 							player->bullet[i]->isShot_ = false;
 						}
