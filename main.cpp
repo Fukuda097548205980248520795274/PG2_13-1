@@ -66,7 +66,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			{
 				for (int j = 0; j < 2; j++)
 				{
-					if (enemy[j]->isArrival_)
+					if (Enemy::isArrival_)
 					{
 						// 敵に当たったら、消える（出現フラグがfalseになる）
 						if (powf(player->bullet[i]->radius_ + enemy[j]->radius_, 2) >=
